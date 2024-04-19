@@ -1,0 +1,9 @@
+Jacoby's method:
+Time: 0.06 seconds
+Iterations: 23
+Error: 6.53e-10
+
+Gauss-Seidel method:
+Time: 0.04 seconds
+Iterations: 16
+Error: 4.45e-10
