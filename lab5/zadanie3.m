@@ -13,8 +13,8 @@ matrix_condition_numbers = zeros(1, length(N));
 for i = 1:length(N)
     V = vandermonde_matrix(N(i));
     matrix_condition_numbers(i) = cond(V);
-    subplot(2,1,2);
-    plot(N, matrix_condition_numbers);
+    subplot(3,1,1);
+    semilogy(N, matrix_condition_numbers);
     title('Condition numbers')
     xlabel('N');
     ylabel('Cond()');
@@ -36,6 +36,14 @@ for i = 1:length(N)
     max_coefficients_difference_1(i) = max(abs(calculated_coefficients-reference_coefficients));
 end
 
+hold on;
+subplot(3,1,2);
+plot(N, max_coefficients_difference_1);
+title('Condition numbers (wektor b f.liniowa)')
+xlabel('N');
+ylabel('Cond()');
+hold off;
+
 %% chart 3
 for i = 1:length(N)
     ni = N(i);
@@ -51,12 +59,22 @@ for i = 1:length(N)
     max_coefficients_difference_2(i) = max(abs(calculated_coefficients-reference_coefficients));
 end
 
+hold on;
+subplot(3,1,3);
+plot(N, max_coefficients_difference_2);
+title('Condition numbers (wektor b zaburzona f.liniowa)')
+xlabel('N');
+ylabel('Cond()');
+hold off;
+
+% print -dpng zadanie3.png
+
 end
 
 
 function V = vandermonde_matrix(N)
     % Generuje macierz Vandermonde dla N równomiernie rozmieszczonych w przedziale [-1, 1] węzłów interpolacji
-    x_coarse = linspace(-1,1,N);
+    x_coarse = linspace(0,1,N);
     V = zeros(N, N);
 
     for i = 1:N
