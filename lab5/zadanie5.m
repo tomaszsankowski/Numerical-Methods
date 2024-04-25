@@ -1,8 +1,8 @@
 function [M,N,P,R,x_coarse,y_coarse,F_coarse,x_fine,y_fine,F_fine] = zadanie5()
-P = 100; % liczba unikalnych współrzędnych x punktów dla których będzie obliczana interpolacja
-R = 100; % liczba unikalnych współrzędnych y punktów dla których będzie obliczana interpolacja
-M = 15; % liczba węzłów interpolacji wzdłuż osi X (stopień wielomianu zmiennej x: M-1)
-N = 15; % liczba węzłów interpolacji wzdłuż osi Y (stopień wielomianu zmiennej y: N-1)
+P = 39; % liczba unikalnych współrzędnych x punktów dla których będzie obliczana interpolacja
+R = 109; % liczba unikalnych współrzędnych y punktów dla których będzie obliczana interpolacja
+M = 35; % liczba węzłów interpolacji wzdłuż osi X (stopień wielomianu zmiennej x: M-1)
+N = 23; % liczba węzłów interpolacji wzdłuż osi Y (stopień wielomianu zmiennej y: N-1)
 
 % Generowanie węzłów interpolacji na płaszczyźnie
 x_coarse = linspace(0, 1, M);
