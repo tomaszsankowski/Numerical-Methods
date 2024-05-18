@@ -13,7 +13,7 @@ function [country, source, degrees, y_original, y_approximation, mse] = zadanie1
 
 country = 'USA';
 source = 'Wind';
-degrees = [1, 5, 10, 20];
+degrees = [1, 5, 10, 25];
 y_approximation= {};
 mse = [];
 
@@ -44,8 +44,8 @@ if isfield(energy, country) && isfield(energy.(country), source)
         plot(x_to_figure, y_approximation{i}, colors(i), 'DisplayName', ['Stopień ' num2str(degrees(i))]);
     end
     hold off;
-    xlabel('Data');
-    ylabel('Wyprodukowana energia');
+    xlabel('x');
+    ylabel('y');
     title('Aproksymacja produkcji energii');
     legend('Location', 'northeastoutside');
     grid on;

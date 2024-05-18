@@ -1,5 +1,5 @@
-function [country, source, degrees, x_coarse, x_fine, y_original, y_yearly, y_approximation, mse, msek] = zadanie4(energy)
-% Głównym celem tej funkcji jest wyznaczenie danych na potrzeby analizy dokładności aproksymacji wielomianowej.
+function [country, source, degrees, x_coarse, x_fine, y_original, y_yearly, y_approximation, mse, msek] = zadanie5(energy)
+% Głównym celem tej funkcji jest wyznaczenie danych na potrzeby analizy dokładności aproksymacji cosinusowej.
 % 
 % energy - struktura danych wczytana z pliku energy.mat
 % country - [String] nazwa kraju
@@ -14,13 +14,13 @@ function [country, source, degrees, x_coarse, x_fine, y_original, y_yearly, y_ap
 %   - y_approximation{i} stanowi wartości funkcji aproksymującej w punktach x_fine
 % mse - wektor mający nmax wierszy: mse(i) zawiera wartość błędu średniokwadratowego obliczonego dla aproksymacji stopnia i.
 %   - mse liczony jest dla aproksymacji wyznaczonej dla wektora x_coarse
-% msek - wektor mający (nmax-1) wierszy: msek zawiera wartości błędów różnicowych zdefiniowanych w treści zadania 4
+% msek - wektor mający nmax wierszy: msek zawiera wartości błędów różnicowych zdefiniowanych w treści zadania 5
 %   - msek(i) porównuj aproksymacje wyznaczone dla i-tego oraz (i+1) stopnia wielomianu
 %   - msek liczony jest dla aproksymacji wyznaczonych dla wektora x_fine
 
 country = 'USA';
 source = 'Wind';
-degrees = [5 15 20 25];
+degrees = [5 10 15 20];
 x_coarse = [];
 x_fine = [];
 y_original = [];
@@ -34,6 +34,7 @@ if isfield(energy, country) && isfield(energy.(country), source)
     % Przygotowanie danych do aproksymacji
     dates = energy.(country).(source).Dates;
     y_original = energy.(country).(source).EnergyProduction;
+    y_original_mean = movmean(y_original,[11,0]);
 
     % Obliczenie danych rocznych
     n_years = floor(length(y_original) / 12);
@@ -43,18 +44,20 @@ if isfield(energy, country) && isfield(energy.(country), source)
 
     % degrees = 
 
+    % Przygotowanie danych do aproksymacji
     N = length(y_yearly);
-    x_coarse = linspace(-1, 1, N)';
-    x_fine = linspace(-1, 1, (N-1)*10+1)';
-
-    % Pętla po wielomianach różnych stopni
+    P = (N-1)*8+1; % liczba wartości funkcji aproksymującej
+    x_coarse = linspace(0, 1, N)';
+    x_fine = linspace(0, 1, P)';
+    
     prev_p = [];
-    for i = 1:N-1
-        p = my_polyfit(x_coarse, y_yearly, i);
-        y_approximation{i} = polyval(p, x_fine);
-        mse(i, 1) = mean(((y_yearly-polyval(p, x_coarse)).^2));
+    % Pętla po wielomianach różnych stopni
+    for i = 1:N
+        p=dct2_custom(y_yearly, i);
+        y_approximation{i} = idct2_custom(p, i, N, P);
+        mse(i, 1) = mean(((y_yearly-idct2_custom(p, i, N, N)).^2));
         if i > 1
-            msek(i-1, 1) = mean(((polyval(p_prev, x_fine)-polyval(p, x_fine)).^2));
+            msek(i-1, 1) = mean((idct2_custom(p_prev, i-1, N, P)-idct2_custom(p, i, N, P)).^2);
         end
         p_prev = p;
     end
@@ -70,8 +73,8 @@ if isfield(energy, country) && isfield(energy.(country), source)
         plot(x_fine, y_approximation{degrees(i)}, colors(i), 'DisplayName', ['Stopień ' num2str(degrees(i))]);
     end
     hold off;
-    xlabel('x');
-    ylabel('y');
+    xlabel('Data');
+    ylabel('Wyprodukowana energia');
     title('Aproksymacja produkcji energii');
     legend('Location', 'northeastoutside');
     grid on;
@@ -92,23 +95,42 @@ if isfield(energy, country) && isfield(energy.(country), source)
     title('Błąd MSEK:');
     grid on;
 
-    print('zadanie4.png', '-dpng');
-
+    print('zadanie5.png', '-dpng');
 else
     disp(['Dane dla (country=', country, ') oraz (source=', source, ') nie są dostępne.']);
 end
 
 end
 
-function p = my_polyfit(x, y, deg)
-    m = length(x);
-    X = zeros(m, deg+1);
+function X = dct2_custom(x, kmax)
+% Wyznacza kmax pierwszych współczynników DCT-2 dla wektora wejściowego x.
+    N = length(x);
+    X = zeros(kmax, 1);
+    c2 = sqrt(2/N);
+    c3 = pi/2/N;
+    nn = (1:N)';
 
-    for i = 1:m
-        for j = deg:-1:0
-            X(i, deg-j+1) = x(i)^j;
-        end
+    X(1) = sqrt(1/N) * sum( x(nn) );
+    for k = 2:kmax
+        X(k) = c2 * sum( x(nn) .* cos(c3 * (2*(nn-1)+1) * (k-1)) );
     end
-
-    p = (transpose(X) * X) \ (transpose(X) * y);
 end
+
+function x = idct2_custom(X, kmax, N, P)
+% Wyznacza wartości aproksymacji cosinusowej x.
+% X - współczyniki DCT
+% kmax - liczba współczynników DCT zastosowanych do wyznaczenia wektora x
+% N - liczba danych dla których została wyznaczona macierz X
+% P - długość zwracanego wektora x (liczba wartości funkcji aproksymującej w przedziale [0,1])
+    x = zeros(P, 1);
+    kk = (2:kmax)';
+    c1 = sqrt(1/N);
+    c2 = sqrt(2/N);
+    c3 = pi*(N - 1)/(2*N*(P - 1));
+    c4 = -(pi*(N - P))/(2*N*(P - 1));
+
+    for n = 1:P
+        x(n) = c1*X(1) + c2*sum( X(kk) .* cos((c3*(2*(n-1)+1)+c4) * (kk-1)) );
+    end
+end
+

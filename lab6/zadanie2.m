@@ -47,8 +47,8 @@ if isfield(energy, country) && isfield(energy.(country), source)
         plot(x_to_figure, y_approximation{i}, colors(i), 'DisplayName', ['Stopień ' num2str(degrees(i))]);
     end
     hold off;
-    xlabel('Data');
-    ylabel('Wyprodukowana energia');
+    xlabel('x');
+    ylabel('y');
     title('Wygladzona aproksymacja produkcji energii');
     legend('Location', 'northeastoutside');
     grid on;
