@@ -47,7 +47,7 @@ def evaluate_polynomial(path, name, equal_nodes, chebyshev_nodes):
 
     # Read CSV
 
-    x, y = read_csv('paths/MountEverest.csv')
+    x, y = read_csv('paths/' + name + '.csv')
     n_org = len(x)
 
     x = np.array(x)

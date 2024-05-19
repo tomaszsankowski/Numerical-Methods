@@ -16,6 +16,7 @@ def plot(x_plot, y_plot, title, x_label, y_label):
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.legend()
+    plt.savefig('plots/' + title + '.png')
     plt.show()
 
 
@@ -27,6 +28,7 @@ def plot_interpolation(x_org, y_org, x_inter_dot, y_inter_dot, y_inter, title, x
     plt.xlabel(x_label)
     plt.ylabel(y_label)
     plt.legend()
+    plt.savefig('plots/' + title + '.png')
     plt.show()
 
 
@@ -50,8 +52,8 @@ def lagrange_function(val, x_inter, y_inter):
     for x_fi in range(len(x_inter)):
         tmp = 1
         for x_k in range(len(x_inter)):
-            if x_fi != x_k:
-                tmp *= (val - x_inter[x_k]) / (x_inter[x_fi] - x_inter[x_k])
+            if x_fi != x_k and x_inter[x_fi] != x_inter[x_k]:
+                tmp *= (val - x_inter[x_k]) / (x_inter[x_fi] - x_inter[x_k] + 1e-10)
         out += tmp * y_inter[x_fi]
     return out
 
@@ -195,12 +197,12 @@ def evaluate_csv(path, name, equal_nodes, chebyshev_nodes, cubic_nodes):
 
 
 # Main
+for n_nodes in [50, 100]:
+    evaluate_csv('paths/MountEverest.csv', 'Mount Everest', n_nodes, n_nodes, n_nodes, )  # jedne wzniesienie
 
-evaluate_csv('paths/MountEverest.csv', 'Mount Everest', 10, 10, 10, )  # jedne wzniesienie
+    evaluate_csv('paths/WielkiKanionKolorado.csv', 'Wielki Kanion Kolorado', n_nodes, n_nodes, n_nodes)  # jeden duży dołek i mniejsze dołki w nim
 
-evaluate_csv('paths/WielkiKanionKolorado.csv', 'Wielki Kanion Kolorado', 10, 10, 10)  # jeden duży dołek i mniejsze dołki w nim
-
-evaluate_csv('paths/100.csv', '100', 10, 10, 10)  # wiele wzniesień
+# evaluate_csv('paths/100.csv', '100', 10, 10, 10)  # wiele wzniesień
 
 # Additional
 
