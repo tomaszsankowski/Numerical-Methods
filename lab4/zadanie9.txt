@@ -1,7 +1,0 @@
-Dla punktu x0 = 6 funkcja fzero bez problemu znalazła bardzo przybliżone miejsce zerowe funkcji tangens. Dla punktu x0 = 4.5 funkcja fzero jednak miała duże problemy i ostatecznie zakończyła swoje działanie po wielu iteracjach, zwracając komunikat, że w okolicach naszego x0 może znajdować się punkt nieciągłości, który uniemożliwia znalezienie miejsca zerowego.
-
-Funkcja fzero użyła bisekcji do poszukiwania punktu. Przedział wybierała sprawdzając czy dla konkretnych równych odległości od punktu x0 następuje zmiana znaku między zakresami. Zakres ze zmianą znaku znalazła ona między punktem w miejscu X=3/2*pi. W punkcie tym, wartości x mniejsze od X=3/2*pi dążą do +nieskończonści, natomiast wartości x większe od X=3/2*pi dążą do -nieskończoności. W ten sposób algorytm został wprowadzony w błąd, i zakładał, że w okoliczach X=3/2*pi znajduje się miejsce zerowe funkcji tangens. Puszczony algorytm bisekcji okazał się rozbieżny, a sam algorytm po 68 iteracjach zakończył działanie komunikatem, iż nie jest w stanie stwierdzić czy w wyliczanym punkcie znajduje się miejsce zerowe.
-
-Udowadnia to, że szybkie metody szukania miejsc zerowych mogą okazać się nieoptymalne, a nawet mogą nie dawać dobrych wyników oraz być rozbieżne, jeżeli badana funkcja jest nieciągła i/lub nieróżniczkowalna.
-
-Tomasz Sankowski.

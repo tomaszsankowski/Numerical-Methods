@@ -1,0 +1,10 @@
+cmake-build-*/
+build/
+*.exe
+*.o
+*.obj
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+*$py.class
